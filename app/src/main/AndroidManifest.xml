@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2016 The Android Open Source Project
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+          http://www.apache.org/licenses/LICENSE-2.0
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<manifest package="com.example.android.pets"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".CatalogActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <!--
+         we add the meta-data tag here to insure the parent
+         activity because we want to add an "UP" button
+        -->
+        <activity
+            android:name=".EditorActivity"
+            android:label="@string/editor_activity_title_new_pet"
+            android:theme="@style/EditorTheme"
+            android:parentActivityName=".CatalogActivity" >
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CatalogActivity" />
+        </activity>
+        <!--// should say that we use a content provider by adding this tag-->
+        <!--// authorities it will be the first activity package name
+                    (Package name of the app)
+you should know that this tag associate this :
+    content authority (com.example.android.pets)
+    with this
+    provider java class (.data.petsProvider)
+                that means when the URI uses this authority it's specifies we want to use
+                this provider class
+        -->
+        <!--// you should be aware of that cycle-->
+        <!--//1- main activity or different app wants to fetch data from the app-->
+        <!--
+        anyApp  ===>  pass URI ===> contentResolver ===> contentProvider ===> blankDPHelper ===> SQLitDatabase
+        or
+        appActivity(UI) ===>  pass URI ===> contentResolver ===> contentProvider ===> blankDPHelper ===> SQLitDatabase
+
+        contentResolver takes the URI authority (com.example.android.pets) to determine which contentProvider to pass
+
+        contentProvider is abstract which is mean all the methods not implemented so u have to subclass it
+        and override the required methods
+
+        blankDPHelper provide a connection to SQLitDatabase
+
+        exported ==> determine whether or not the contentProvider is visible to other applications
+        -->
+        <provider
+            android:authorities="com.example.android.pets"
+            android:name=".data.petsProvider"
+            android:exported="false"/>
+    </application>
+
+</manifest>
